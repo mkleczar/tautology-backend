@@ -1,0 +1,6 @@
+GET http://localhost:8080/test
+###
+GET http://localhost:8080/time
+###
+GET http://localhost:8080/echo/tra la la
+###
