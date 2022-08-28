@@ -11,16 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
-import java.util.Map;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RestController
 public class TautologyController implements TautologyApi {
 
-    private TautologyService service;
+    private final TautologyService service;
 
     public TautologyController(TautologyService service) {
         this.service = service;
@@ -28,31 +24,17 @@ public class TautologyController implements TautologyApi {
 
     @Override
     public ResponseEntity<ParametersResponse> parameters(@Valid ParametersRequest parametersRequest) {
-        Expression expression = service.parse(parametersRequest.getExpression());
-        Set<String> parameters = service.parameters(expression);
-        return ResponseEntity.ok(
-                new ParametersResponse()
-                        .parameters(new ArrayList<>(parameters))
-                        .expression(expression.asText())
-        );
+        log.info("Controller method: parameters called with request: {}", parametersRequest);
+        ParametersResponse response = service.parameters(parametersRequest);
+        log.info("Controller method: parameters response is: {}", response);
+        return ResponseEntity.ok(response);
     }
 
     @Override
     public ResponseEntity<ValidationResponse> validate(@Valid ValidationRequest validationRequest) {
-        // TODO: use mapstruct to map request to model objects?
-        Context context = validationRequest.getParameters().stream()
-                .collect(
-                        Context::builder,
-                        (b, p) -> b.param(p.getName(), p.getValue()),
-                        Context.Builder::merge)
-                .build();
-        Expression expression = service.parse(validationRequest.getExpression());
-        Boolean value = service.validate(expression, context);
-        return ResponseEntity.ok(
-                new ValidationResponse()
-                        .expression(expression.asText())
-                        .parameters(validationRequest.getParameters())
-                        .value(value)
-        );
+        log.info("Controller method: validate called with request: {}", validationRequest);
+        ValidationResponse response = service.validate(validationRequest);
+        log.info("Controller method: validate response is: {}", response);
+        return ResponseEntity.ok(response);
     }
 }

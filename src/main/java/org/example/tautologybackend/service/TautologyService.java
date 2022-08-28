@@ -3,7 +3,14 @@ package org.example.tautologybackend.service;
 import org.example.tautology.Expression;
 import org.example.tautology.ExpressionHelper;
 import org.example.tautology.context.Context;
+import org.example.tautology.openapi.model.ParametersRequest;
+import org.example.tautology.openapi.model.ParametersResponse;
+import org.example.tautology.openapi.model.ValidationRequest;
+import org.example.tautology.openapi.model.ValidationResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+
+import java.util.ArrayList;
 import java.util.Set;
 
 import static org.example.tautology.Scanner.scan;
@@ -11,15 +18,26 @@ import static org.example.tautology.Scanner.scan;
 @Service
 public class TautologyService {
 
-    public Expression parse(String expressionStr) {
-        return scan(expressionStr);
+    public ParametersResponse parameters(ParametersRequest request) {
+        Expression expression = scan(request.getExpression());
+        Set<String> parameters = ExpressionHelper.collectVariables(expression);
+        return new ParametersResponse()
+                        .parameters(new ArrayList<>(parameters))
+                        .expression(expression.asText());
     }
 
-    public Set<String> parameters(Expression expression) {
-        return ExpressionHelper.collectVariables(expression);
-    }
-
-    public boolean validate(Expression expression, Context context) {
-        return expression.validate(context);
+    public ValidationResponse validate(ValidationRequest request) {
+        Context context = request.getParameters().stream()
+                .collect(
+                        Context::builder,
+                        (b, p) -> b.param(p.getName(), p.getValue()),
+                        Context.Builder::merge)
+                .build();
+        Expression expression = scan(request.getExpression());
+        Boolean value = expression.validate(context);
+        return new ValidationResponse()
+                        .expression(expression.asText())
+                        .parameters(request.getParameters())
+                        .value(value);
     }
 }
