@@ -14,3 +14,21 @@ Content-Type: application/json
 {
     "expression":"p|q&r|s"
 }
+
+###
+POST http://localhost:8080/validate
+Content-Type: application/json
+
+{
+  "expression":"p=>q",
+  "parameters": [
+    {
+      "name": "p",
+      "value": true
+    },
+    {
+      "name": "q",
+      "value": false
+    }
+  ]
+}
