@@ -12,7 +12,7 @@ import java.time.OffsetDateTime;
 
 @Slf4j
 @RestController
-public class TestContrller implements TestApi {
+public class TestController implements TestApi {
 
     @Override
     public ResponseEntity<TestResponse> test() {
