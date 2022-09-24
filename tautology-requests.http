@@ -32,3 +32,17 @@ Content-Type: application/json
     }
   ]
 }
+
+###
+POST http://localhost:8080/validate
+Content-Type: application/json
+
+{
+  "expression":"p|p|p|p|p",
+  "parameters": [
+    {
+      "name": "p",
+      "value": true
+    }
+  ]
+}
