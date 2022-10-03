@@ -3,10 +3,7 @@ package org.example.tautologybackend.service;
 import org.example.tautology.Expression;
 import org.example.tautology.ExpressionHelper;
 import org.example.tautology.context.Context;
-import org.example.tautology.openapi.model.ParametersRequest;
-import org.example.tautology.openapi.model.ParametersResponse;
-import org.example.tautology.openapi.model.ValidationRequest;
-import org.example.tautology.openapi.model.ValidationResponse;
+import org.example.tautology.openapi.model.*;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
@@ -39,5 +36,13 @@ public class TautologyService {
                         .expression(expression.asText())
                         .parameters(request.getParameters())
                         .value(value);
+    }
+
+    public TautologyResponse tautology(TautologyRequest request) {
+        Expression expression = scan(request.getExpression());
+        boolean isTautology = ExpressionHelper.isTautology(expression);
+        return new TautologyResponse()
+                .expression(expression.asText())
+                .value(isTautology);
     }
 }

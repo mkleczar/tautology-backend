@@ -39,4 +39,12 @@ public class TautologyController implements TautologyApi {
         log.info("Controller method: validate response is: {}", response);
         return ResponseEntity.ok(response);
     }
+
+    @Override
+    public ResponseEntity<TautologyResponse> tautology(@Valid TautologyRequest tautologyRequest) {
+        log.info("Controller method: tautology called with request: {}", tautologyRequest);
+        TautologyResponse response = service.tautology(tautologyRequest);
+        log.info("Controller method: tautology response is: {}", response);
+        return ResponseEntity.ok(response);
+    }
 }
